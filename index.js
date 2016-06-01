@@ -1,6 +1,7 @@
 var escape = require('html-escape');
 var hljs = require('highlight.js');
-
+var path = require('path');
+var fs = require('fs');
 
 var map = {
 	'c_cpp': 'c'
@@ -29,23 +30,23 @@ module.exports = {
 	blocks: {
 		ace: {
 			process: function(blk) {
+				var filename = blk.kwargs.filename;
+				var lang = blk.kwargs.lang || (filename? path.extname(filename).slice(1) : 'java');
+
+				var content = (filename? fs.readFileSync(filename,'utf-8').trim():blk.body.trim());
 				if (this.generator === 'website') {
 					var config = {
-						edit: blk.kwargs.edit,
-						lang: blk.kwargs.lang || 'c_cpp',
+						edit: false,
+						lang: lang,
 						check: blk.kwargs.check,
 						theme: blk.kwargs.theme
 					};
-					return '<div class="ace"><div class="aceCode" data-config=' + JSON.stringify(config) + '>' + escape(blk.body.trim()) + '<br></div></div>';
+					return '<div class="ace"><div class="aceCode" data-config=' + JSON.stringify(config) + '>' + escape(content) + '<br></div></div>';
 				} else {
-					var content;
-					var lang = blk.kwargs.lang || 'c_cpp';
 					lang = map[lang] || lang;
 
 					if (hljs.getLanguage(lang))
-						content = hljs.highlight(lang, blk.body.trim()).value;
-					else
-						content = blk.body.trim();
+						content = hljs.highlight(lang, content).value;
 
 					return '<pre><code class="hljs lang-' + lang + '">' + content + '</code></pre>';
 				}
