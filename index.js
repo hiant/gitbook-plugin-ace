@@ -36,7 +36,7 @@ module.exports = {
 				var content = (filename? fs.readFileSync(filename,'utf-8').trim():blk.body.trim());
 				if (this.generator === 'website') {
 					var config = {
-						edit: false,
+						edit: blk.kwargs.edit,
 						lang: lang,
 						check: blk.kwargs.check,
 						theme: blk.kwargs.theme
