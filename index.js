@@ -34,7 +34,7 @@ module.exports = {
 				var lang = blk.kwargs.lang || (filename? path.extname(filename).slice(1) : 'java');
 
 				var content = (filename? fs.readFileSync(filename,'utf-8').trim():blk.body.trim());
-				if (this.generator === 'website') {
+				if (this.output.name === 'website') {
 					var config = {
 						edit: blk.kwargs.edit || false,
 						lang: lang,
